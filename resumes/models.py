@@ -74,15 +74,21 @@ class WorkVolunteer(models.Model):
     summary = models.CharField(max_length=255, null=True)
     highlights = models.ManyToManyField(Highlight, blank=True)
 
+    tracker = FieldTracker()
+
 
 class Work(WorkVolunteer):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='work')
     company = models.CharField(max_length=80)
 
+    tracker = FieldTracker()
+
 
 class Volunteer(WorkVolunteer):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='volunteer')
     organization = models.CharField(max_length=80)
+
+    tracker = FieldTracker()
 
 
 class Education(models.Model):
@@ -95,6 +101,8 @@ class Education(models.Model):
     gpa = models.CharField(max_length=5, null=True)
     courses = models.ManyToManyField(Course, blank=True)
 
+    tracker = FieldTracker()
+
 
 class Award(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='awards')
@@ -102,6 +110,8 @@ class Award(models.Model):
     date = models.DateField(null=True)
     awarder = models.CharField(max_length=80)
     summary = models.CharField(max_length=255, null=True)
+
+    tracker = FieldTracker()
 
 
 class Publication(models.Model):
@@ -111,6 +121,8 @@ class Publication(models.Model):
     release_date = models.DateField(null=True)
     website = models.CharField(max_length=255, null=True)
     summary = models.CharField(max_length=255, null=True)
+    
+    tracker = FieldTracker()
 
 
 class Skill(models.Model):
@@ -119,11 +131,15 @@ class Skill(models.Model):
     level = models.CharField(max_length=50)
     keywords = models.ManyToManyField(Keyword, blank=True)
 
+    tracker = FieldTracker()
+
 
 class Language(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='languages')
     language = models.CharField(max_length=80)
     fluency = models.CharField(max_length=50)
+
+    tracker = FieldTracker()
 
 
 class Interest(models.Model):
@@ -131,8 +147,12 @@ class Interest(models.Model):
     name = models.CharField(max_length=80)
     keywords = models.ManyToManyField(Keyword, blank=True)
 
+    tracker = FieldTracker()
+
 
 class Reference(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='references')
     name = models.CharField(max_length=80)
     reference = models.CharField(max_length=255)
+
+    tracker = FieldTracker()
