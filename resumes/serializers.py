@@ -1,11 +1,12 @@
 from resumes.models import (
     Award, Basic, Course, Education, Highlight, Interest, Keyword, Language,
-    Location, Profile, Publication, Resume, Skill, Volunteer, Work
+    Location, Profile, Publication, Reference, Resume, Skill, Volunteer, Work
 )
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationSerializer(WritableNestedModelSerializer):
     postalCode = serializers.CharField(source='postal_code')
     countryCode = serializers.CharField(source='country_code')
 
@@ -14,45 +15,54 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('address', 'postalCode', 'city', 'countryCode', 'region')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Profile
         fields = ('network', 'username', 'url')
 
 
-class BasicSerializer(serializers.ModelSerializer):
+class BasicSerializer(WritableNestedModelSerializer):
     location = LocationSerializer()
-    profiles = ProfileSerializer(many=True)
+    profiles = ProfileSerializer(many=True,)
 
     class Meta:
         model = Basic
         fields = ('name', 'label', 'picture', 'email', 'phone', 'website',
                   'summary', 'location', 'profiles')
+    
+    # def create(self, validated_data):
+    #     profiles = validated_data.pop('profiles')
+
+    #     for profile in profiles:
+    #         self.instance.profiles.add(profile)
+    #         self.instance.save()
+        
+    #     return super().create(validated_data)
 
 
-class HighlightSerializer(serializers.ModelSerializer):
+class HighlightSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Highlight
         fields = ('name',)
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Course
         fields = ('name',)
 
 
-class KeywordSerializer(serializers.ModelSerializer):
+class KeywordSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Keyword
         fields = ('name',)
 
 
-class WorkSerializer(serializers.ModelSerializer):
+class WorkSerializer(WritableNestedModelSerializer):
     highlights = HighlightSerializer(many=True)
     startDate = serializers.DateField(source='start_date')
     endDate = serializers.DateField(source='end_date')
@@ -63,7 +73,7 @@ class WorkSerializer(serializers.ModelSerializer):
                   'summary', 'highlights')
 
 
-class VolunteerSerializer(serializers.ModelSerializer):
+class VolunteerSerializer(WritableNestedModelSerializer):
     highlights = HighlightSerializer(many=True)
     startDate = serializers.DateField(source='start_date')
     endDate = serializers.DateField(source='end_date')
@@ -74,7 +84,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
                   'summary', 'highlights')
 
 
-class EducationSerializer(serializers.ModelSerializer):
+class EducationSerializer(WritableNestedModelSerializer):
     courses = CourseSerializer(many=True)
     studyType = serializers.CharField(source='study_type')
     startDate = serializers.DateField(source='start_date')
@@ -86,14 +96,14 @@ class EducationSerializer(serializers.ModelSerializer):
                   'gpa', 'courses')
 
 
-class AwardSerializer(serializers.ModelSerializer):
+class AwardSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Award
         fields = ('title', 'date', 'awarder', 'summary')
 
 
-class PublicationSerializer(serializers.ModelSerializer):
+class PublicationSerializer(WritableNestedModelSerializer):
     releaseDate = serializers.DateField(source='release_date')
 
     class Meta:
@@ -101,7 +111,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         fields = ('name', 'publisher', 'releaseDate', 'website', 'summary')
 
 
-class SkillSerializer(serializers.ModelSerializer):
+class SkillSerializer(WritableNestedModelSerializer):
     keywords = KeywordSerializer(many=True)
 
     class Meta:
@@ -109,14 +119,14 @@ class SkillSerializer(serializers.ModelSerializer):
         fields = ('name', 'level', 'keywords')
 
 
-class LanguageSerializer(serializers.ModelSerializer):
+class LanguageSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Language
         fields = ('language', 'fluency')
 
 
-class InterestSerializer(serializers.ModelSerializer):
+class InterestSerializer(WritableNestedModelSerializer):
     keywords = KeywordSerializer(many=True)
 
     class Meta:
@@ -124,14 +134,14 @@ class InterestSerializer(serializers.ModelSerializer):
         fields = ('name', 'keywords')
 
 
-class ReferenceSerializer(serializers.ModelSerializer):
+class ReferenceSerializer(WritableNestedModelSerializer):
 
     class Meta:
-        model = Interest
+        model = Reference
         fields = ('name', 'reference')
 
 
-class ResumeSerializer(serializers.modelSerializer):
+class ResumeSerializer(WritableNestedModelSerializer):
     basics = BasicSerializer()
     work = WorkSerializer(many=True)
     volunteer = VolunteerSerializer(many=True)
