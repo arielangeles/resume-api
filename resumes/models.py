@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils import FieldTracker
 
 class Location(models.Model):
     address = models.CharField(max_length=255, null=True)
@@ -19,17 +20,39 @@ class Basic(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
     version = models.IntegerField(default=0)
 
+    tracker = FieldTracker()
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.version += 1
+        return super().save(*args, **kwargs)
+
 
 class Profile(models.Model):
     basic = models.ForeignKey(Basic, on_delete=models.CASCADE, related_name='profiles')
     network = models.CharField(max_length=60, null=True)
     username = models.CharField(max_length=50, null=True)
     url = models.CharField(max_length=255, null=True)
+    version = models.IntegerField(default=0)
+
+    tracker = FieldTracker()
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.version += 1
+        return super().save(*args, **kwargs)
 
 
 class Resume(models.Model):
     basics = models.OneToOneField(Basic, on_delete=models.CASCADE)
     version = models.IntegerField(default=0)
+
+    tracker = FieldTracker()
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self.version += 1
+        return super().save(*args, **kwargs)
 
 class Highlight(models.Model):
     name = models.CharField(max_length=255)

@@ -24,7 +24,7 @@ class ProfileSerializer(WritableNestedModelSerializer):
 
 class BasicSerializer(WritableNestedModelSerializer):
     location = LocationSerializer()
-    profiles = ProfileSerializer(many=True, read_only=True)
+    profiles = ProfileSerializer(many=True,)
 
     class Meta:
         model = Basic
