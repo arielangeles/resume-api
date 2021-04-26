@@ -80,5 +80,9 @@ class ResumeAPIView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Upd
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-        elif request.method == 'PUT':
-            return custom_update(request, basic, BasicSerializer)
+    @action(detail=True, methods=['PUT'], url_path='basics/profiles')
+    def edit_profiles(self, request, basics__name):
+        instance = None  # type: str
+        
+        if request.method == 'PUT':
+            return custom_update(request, instance, ProfileSerializer)

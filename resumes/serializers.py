@@ -30,16 +30,6 @@ class BasicSerializer(WritableNestedModelSerializer):
         model = Basic
         fields = ('name', 'label', 'picture', 'email', 'phone', 'website',
                   'summary', 'location', 'profiles')
-    
-    # def create(self, validated_data):
-    #     profiles = validated_data.pop('profiles')
-
-    #     for profile in profiles:
-    #         self.instance.profiles.add(profile)
-    #         self.instance.save()
-        
-    #     return super().create(validated_data)
-
 
 class HighlightSerializer(WritableNestedModelSerializer):
 
