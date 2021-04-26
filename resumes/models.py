@@ -21,7 +21,7 @@ class Basic(models.Model):
 
 
 class Profile(models.Model):
-    basic = models.ForeignKey(Basic, on_delete=models.CASCADE)
+    basic = models.ForeignKey(Basic, on_delete=models.CASCADE, related_name='profiles')
     network = models.CharField(max_length=60, null=True)
     username = models.CharField(max_length=50, null=True)
     url = models.CharField(max_length=255, null=True)
@@ -29,7 +29,7 @@ class Profile(models.Model):
 
 class Resume(models.Model):
     basics = models.OneToOneField(Basic, on_delete=models.CASCADE)
-
+    version = models.IntegerField(default=0)
 
 class Highlight(models.Model):
     name = models.CharField(max_length=255)
@@ -53,17 +53,17 @@ class WorkVolunteer(models.Model):
 
 
 class Work(WorkVolunteer):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='work')
     company = models.CharField(max_length=80)
 
 
 class Volunteer(WorkVolunteer):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='volunteer')
     organization = models.CharField(max_length=80)
 
 
 class Education(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='education')
     institution = models.CharField(max_length=80)
     area = models.CharField(max_length=50, null=True)
     study_type = models.CharField(max_length=80, null=True)
@@ -74,7 +74,7 @@ class Education(models.Model):
 
 
 class Award(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='awards')
     title = models.CharField(max_length=80)
     date = models.DateField(null=True)
     awarder = models.CharField(max_length=80)
@@ -82,7 +82,7 @@ class Award(models.Model):
 
 
 class Publication(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='publications')
     name = models.CharField(max_length=80)
     publisher = models.CharField(max_length=80)
     release_date = models.DateField(null=True)
@@ -91,25 +91,25 @@ class Publication(models.Model):
 
 
 class Skill(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=80)
     level = models.CharField(max_length=50)
     keywords = models.ManyToManyField(Keyword, blank=True)
 
 
 class Language(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='languages')
     language = models.CharField(max_length=80)
     fluency = models.CharField(max_length=50)
 
 
 class Interest(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='interests')
     name = models.CharField(max_length=80)
     keywords = models.ManyToManyField(Keyword, blank=True)
 
 
 class Reference(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='references')
     name = models.CharField(max_length=80)
     reference = models.CharField(max_length=255)
